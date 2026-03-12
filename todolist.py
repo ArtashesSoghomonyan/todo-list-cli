@@ -15,9 +15,9 @@ class TodoList:
 
         for index, item in enumerate(self.items):
             if item["done"]:
-                result += f"{index + 1}) [x] {item["name"]}"
+                result += f"{index + 1}. ✅ {item["name"]}"
             else:
-                result += f"{index + 1}) [ ] {item["name"]}"
+                result += f"{index + 1}. ⬜ {item["name"]}"
 
             if index != len(self.items) - 1:
                 result += "\n"
