@@ -3,7 +3,7 @@ import json
 import argparse
 
 from todolist import TodoList
-
+from utils import clear_the_console
 
 SOURCE = os.path.expanduser('~/.todo.json')
 EMPTY_JSON_FORM = """{
@@ -12,6 +12,8 @@ EMPTY_JSON_FORM = """{
 """
 
 def main():
+    clear_the_console()
+
     argument_parser = argparse.ArgumentParser()
     argument_parser.add_argument("--list", "-l", help="Show all of the todos.", required=False, action="store_true")
     argument_parser.add_argument("--add", "-a", help="Add a new todo", required=False, type=str)
