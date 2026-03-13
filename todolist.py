@@ -1,5 +1,7 @@
 from typing import TypedDict
 
+from utils import user_error
+
 
 class Todo(TypedDict):
     name: str
@@ -32,18 +34,18 @@ class TodoList:
 
     def remove_item(self, index: int) -> None:
         if index >= len(self.items) or index < 0:
-            raise IndexError(f"There is no item No:{index + 1}")
+            user_error(f"There is no item No:{index + 1}")
         else:
             del self.items[index]
 
     def check_item(self, index: int) -> None:
         if index >= len(self.items) or index < 0:
-            raise IndexError(f"There is no item No:{index + 1}")
+            user_error(f"There is no item No:{index + 1}")
         else:
             self.items[index]["done"] = True
 
     def uncheck_item(self, index: int) -> None:
         if index >= len(self.items) or index < 0:
-            raise IndexError(f"There is no item No:{index + 1}")
+            user_error(f"There is no item No:{index + 1}")
         else:
             self.items[index]["done"] = False

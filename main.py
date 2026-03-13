@@ -2,14 +2,19 @@ import os
 import json
 import argparse
 
+from rich import print as rprint
+
 from todolist import TodoList
 from utils import clear_the_console
 
+
 SOURCE = os.path.expanduser('~/.todo.json')
+
 EMPTY_JSON_FORM = """{
   "items": []
 }
 """
+
 
 def main():
     clear_the_console()
@@ -38,12 +43,12 @@ def main():
     if arguments.list:
         print(todos)
     elif arguments.add:
-        print(f"+++ added a new note: {arguments.add} \n")
+        rprint(f"[green]+++ added a new note: {arguments.add} [/green]\n")
         todos.add_item(arguments.add)
         print(todos)
     elif arguments.remove:
         if arguments.remove <= len(todos.items) and arguments.remove > 0:
-            print(f"--- removed note: {todos.items[arguments.remove - 1]["name"]} \n")
+            rprint(f"[red]--- removed note: {todos.items[arguments.remove - 1]["name"]} [/red]\n")
         todos.remove_item(arguments.remove - 1)
         print(todos)
     elif arguments.check:
@@ -66,10 +71,6 @@ def main():
         }
         json.dump(result, file, indent=2)
 
+
 if __name__ == "__main__":
     main()
-
-# with open(todo_file, 'r') as f:
-#     todos = json.load(f)
-
-# # Save todos
