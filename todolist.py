@@ -4,6 +4,7 @@ from utils import user_error
 
 
 class Todo(TypedDict):
+    # After changing this TypedDict also change the todo validation function in utils
     name: str
     done: bool
 
