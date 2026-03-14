@@ -60,7 +60,7 @@ def main():
         print(todos)
     elif arguments.uncheck:
         if arguments.uncheck <= len(todos.items) and arguments.uncheck > 0:
-            print(f"xxx checked note: {todos.items[arguments.uncheck - 1]["name"]} \n")
+            print(f"[ ] unchecked note: {todos.items[arguments.uncheck - 1]["name"]} \n")
         todos.check_item(arguments.uncheck - 1)
         print(todos)
     else:
