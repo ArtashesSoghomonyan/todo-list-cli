@@ -5,7 +5,7 @@ import tomllib
 from pathlib import Path
 
 from todolist import TodoList
-from utils import green, red
+from utils import green, red, warning, yes_no_prompt
 
 
 SOURCE = os.path.expanduser('~/.todo.json')
@@ -24,7 +24,7 @@ def main():
 
     argument_parser = argparse.ArgumentParser()
     argument_parser.add_argument("--list", "-l", help="Show all of the todos.", required=False, action="store_true")
-    argument_parser.add_argument("--version", "-v", help="Print the version of app", required=False, action="store_true")
+    argument_parser.add_argument("--version", "-v", action="version", version=f"v{VERSION}")
     argument_parser.add_argument("--clear", help="Remove every task/todo", required=False, action="store_true")
     argument_parser.add_argument("--add", "-a", help="Add a new todo", required=False, type=str)
     argument_parser.add_argument("--remove", "-r", help="Remove todo from list by number", required=False, type=int)
@@ -51,6 +51,11 @@ def main():
         else:
             print(todos)
     elif arguments.add:
+        if not todos.is_unique_item(arguments.add):
+            answer = yes_no_prompt(warning(f"A task with name \"{arguments.add}\" already exists, would you still like to create another one?"))
+            if answer == "No":
+                return None
+
         print(green(f"+++ added a new note: {arguments.add}\n"))
         todos.add_item(arguments.add)
         print(todos)
@@ -69,10 +74,13 @@ def main():
             print(f"[ ] unchecked note: {todos.items[arguments.uncheck - 1]["name"]} \n")
         todos.uncheck_item(arguments.uncheck - 1)
         print(todos)
-    elif arguments.version:
-        print(f"v{VERSION}")
     elif arguments.clear:
-        todos.clear()
+        answer = yes_no_prompt(warning("Are you sure that you want to delete ALL of your tasks?"))
+
+        if answer == "No":
+            return None
+        else:
+            todos.clear()
     else:
         print(f"Todo list cli v{VERSION}: use -h or --help flag for more information")
 

@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from utils import user_error, yes_no_prompt, warning
+from utils import user_error
 
 
 class Todo(TypedDict):
@@ -30,12 +30,6 @@ class TodoList:
         return result
 
     def add_item(self, name: str) -> None:
-        if name in [item["name"] for item in self.items]:
-            answer = yes_no_prompt(warning(f"A task with name \"{name}\" already exists, would you still like to create another one?"))
-
-            if answer == "No":
-                return None
-
         self.items.append({
             "name": name,
             "done": False,
@@ -60,23 +54,18 @@ class TodoList:
             self.items[index]["done"] = False
 
     def clear(self) -> None:
-        answer = yes_no_prompt(warning("Are you sure that you want to delete ALL of your tasks?"))
+        self.items = []
 
-        if answer == "No":
-            return None
-        else:
-            self.items = []
+    def is_unique_item(self, name: str) -> bool:
+        return name in [item["name"] for item in self.items]
 
     @staticmethod
     def is_valid_todo(todo: object) -> bool:
-        valid_keys = ["name", "done"]
-        valid_value_types = [str, bool]
+        valid_keys = {"name", "done"}
 
-        if not isinstance(todo, dict):
-            return False
-
-        if len([x for x in todo.keys() if x not in valid_keys]) != 0:
-            return False
-        elif [type(x) for x in todo.values()] != valid_value_types:
-            return False
-        return True
+        return (
+            isinstance(todo, dict) and
+            set(todo.keys()) == valid_keys and
+            isinstance(todo.get('name'), str) and
+            isinstance(todo.get('done'), bool)
+        )
