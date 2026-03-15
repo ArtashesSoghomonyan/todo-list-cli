@@ -59,6 +59,14 @@ class TodoList:
         else:
             self.items[index]["done"] = False
 
+    def clear(self) -> None:
+        answer = yes_no_prompt(warning("Are you sure that you want to delete ALL of your tasks?"))
+
+        if answer == "No":
+            return None
+        else:
+            self.items = []
+
     @staticmethod
     def is_valid_todo(todo: object) -> bool:
         valid_keys = ["name", "done"]
