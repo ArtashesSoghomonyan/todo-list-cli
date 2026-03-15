@@ -8,7 +8,7 @@ from todolist import TodoList
 from utils import green, red, warning, yes_no_prompt
 
 
-SOURCE = os.path.expanduser('~/.todo.json')
+SOURCE = os.path.expanduser("~/.todo.json")
 
 with open(Path(__file__).parent / "pyproject.toml", "rb") as f:
     VERSION = tomllib.load(f)["project"]["version"]
@@ -18,8 +18,24 @@ EMPTY_JSON_FORM = """{
 }
 """
 
+def load_todos(source: str) -> TodoList:
+    try:
+        with open(source, "r") as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        with open(source, "w") as file:
+            file.write(EMPTY_JSON_FORM)
+            data = json.loads(EMPTY_JSON_FORM)
 
-def main():
+    if "items" in data.keys():
+        todos = TodoList(data["items"])
+    else:
+        todos = TodoList([])
+
+    return todos
+
+
+def main() -> None:
     # clear_the_console()
 
     argument_parser = argparse.ArgumentParser()
@@ -32,18 +48,7 @@ def main():
     argument_parser.add_argument("--uncheck", "-u", help="Mark item as incomplete (undone)", required=False, type=int)
     arguments = argument_parser.parse_args()
 
-    try:
-        with open(SOURCE, "r") as file:
-            data = json.load(file)
-    except FileNotFoundError:
-        with open(SOURCE, "w") as file:
-            file.write(EMPTY_JSON_FORM)
-            data = json.loads(EMPTY_JSON_FORM)
-
-    if "items" in data.keys():
-        todos = TodoList(data["items"])
-    else:
-        todos = TodoList([])
+    todos = load_todos(SOURCE)
 
     if arguments.list:
         if len(todos.items) == 0:
@@ -66,12 +71,12 @@ def main():
         print(todos)
     elif arguments.check:
         if arguments.check <= len(todos.items) and arguments.check > 0:
-            print(f"[x] checked note: {todos.items[arguments.check - 1]["name"]} \n")
+            print(green(f"[x] checked note: {todos.items[arguments.check - 1]["name"]} \n"))
         todos.check_item(arguments.check - 1)
         print(todos)
     elif arguments.uncheck:
         if arguments.uncheck <= len(todos.items) and arguments.uncheck > 0:
-            print(f"[ ] unchecked note: {todos.items[arguments.uncheck - 1]["name"]} \n")
+            print(red(f"[ ] unchecked note: {todos.items[arguments.uncheck - 1]["name"]} \n"))
         todos.uncheck_item(arguments.uncheck - 1)
         print(todos)
     elif arguments.clear:
@@ -81,6 +86,7 @@ def main():
             return None
         else:
             todos.clear()
+            print("You have deleted all of your tasks.")
     else:
         print(f"Todo list cli v{VERSION}: use -h or --help flag for more information")
 
