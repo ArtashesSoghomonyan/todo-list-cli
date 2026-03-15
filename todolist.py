@@ -4,14 +4,16 @@ from utils import user_error
 
 
 class Todo(TypedDict):
-    # After changing this TypedDict also change the todo validation function in utils
+    # After changing this TypedDict also change the todo validation function
     name: str
     done: bool
 
 
 class TodoList:
     def __init__(self, items: list[Todo]) -> None:
-        self.items = items
+        # Check for validation
+        valid_items = [item for item in items if self.is_valid_todo(item)]
+        self.items: list[Todo] = valid_items
 
     def __str__(self) -> str:
         result: str = ""
@@ -50,3 +52,17 @@ class TodoList:
             user_error(f"There is no item No:{index + 1}")
         else:
             self.items[index]["done"] = False
+
+    @staticmethod
+    def is_valid_todo(todo: object) -> bool:
+        valid_keys = ["name", "done"]
+        valid_value_types = [str, bool]
+
+        if not isinstance(todo, dict):
+            return False
+
+        if len([x for x in todo.keys() if x not in valid_keys]) != 0:
+            return False
+        elif [type(x) for x in todo.values()] != valid_value_types:
+            return False
+        return True

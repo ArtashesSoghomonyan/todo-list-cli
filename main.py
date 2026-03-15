@@ -5,7 +5,7 @@ import argparse
 from rich import print as rprint
 
 from todolist import TodoList
-from utils import clear_the_console, is_valid_todo
+from utils import clear_the_console
 
 
 SOURCE = os.path.expanduser('~/.todo.json')
@@ -36,9 +36,7 @@ def main():
             data = json.loads(EMPTY_JSON_FORM)
 
     if "items" in data.keys():
-        # Validation check
-        valid_items = [item for item in data["items"] if is_valid_todo(item)]
-        todos = TodoList(valid_items)
+        todos = TodoList(data["items"])
     else:
         todos = TodoList([])
 
