@@ -2,10 +2,8 @@ import os
 import json
 import argparse
 
-from rich import print as rprint
-
 from todolist import TodoList
-from utils import clear_the_console
+from utils import clear_the_console, green, red
 
 
 SOURCE = os.path.expanduser('~/.todo.json')
@@ -43,12 +41,12 @@ def main():
     if arguments.list:
         print(todos)
     elif arguments.add:
-        rprint(f"[green]+++ added a new note: {arguments.add} [/green]\n")
+        green(f"+++ added a new note: {arguments.add}\n")
         todos.add_item(arguments.add)
         print(todos)
     elif arguments.remove:
         if arguments.remove <= len(todos.items) and arguments.remove > 0:
-            rprint(f"[red]--- removed note: {todos.items[arguments.remove - 1]["name"]} [/red]\n")
+            red(f"--- removed note: {todos.items[arguments.remove - 1]["name"]}\n")
         todos.remove_item(arguments.remove - 1)
         print(todos)
     elif arguments.check:

@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from utils import user_error
+from utils import user_error, yes_no_prompt, warning
 
 
 class Todo(TypedDict):
@@ -30,6 +30,12 @@ class TodoList:
         return result
 
     def add_item(self, name: str) -> None:
+        if name in [item["name"] for item in self.items]:
+            answer = yes_no_prompt(warning(f"A task with name \"{name}\" already exists, would you still like to create another one?"))
+
+            if answer == "No":
+                return None
+
         self.items.append({
             "name": name,
             "done": False,
