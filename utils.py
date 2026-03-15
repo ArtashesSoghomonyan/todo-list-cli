@@ -16,9 +16,9 @@ NC = "\033[0m" # No color
 
 def clear_the_console() -> None:
     if platform.system() == "Windows":
-        subprocess.run("cls")
+        subprocess.run(["cls"])
     else:  # Assumes Linux/macOS/Unix
-        subprocess.run("clear")
+        subprocess.run(["clear"])
 
 
 def user_error(message: str) -> Never:
