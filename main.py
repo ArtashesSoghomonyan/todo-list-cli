@@ -1,12 +1,17 @@
 import os
 import json
 import argparse
+import tomllib
+from pathlib import Path
 
 from todolist import TodoList
 from utils import clear_the_console, green, red
 
 
 SOURCE = os.path.expanduser('~/.todo.json')
+
+with open(Path(__file__).parent / "pyproject.toml", "rb") as f:
+    VERSION = tomllib.load(f)["project"]["version"]
 
 EMPTY_JSON_FORM = """{
   "items": []
@@ -19,6 +24,7 @@ def main():
 
     argument_parser = argparse.ArgumentParser()
     argument_parser.add_argument("--list", "-l", help="Show all of the todos.", required=False, action="store_true")
+    argument_parser.add_argument("--version", "-v", help="Print the version of app", required=False, action="store_true")
     argument_parser.add_argument("--add", "-a", help="Add a new todo", required=False, type=str)
     argument_parser.add_argument("--remove", "-r", help="Remove todo from list by number", required=False, type=int)
     argument_parser.add_argument("--check", "-c", help="Mark item as complete (done)", required=False, type=int)
@@ -59,8 +65,10 @@ def main():
             print(f"[ ] unchecked note: {todos.items[arguments.uncheck - 1]["name"]} \n")
         todos.check_item(arguments.uncheck - 1)
         print(todos)
+    elif arguments.version:
+        print(f"v{VERSION}")
     else:
-        print("Todo list cli: use -h or --help flag for more information")
+        print(f"Todo list cli v{VERSION}: use -h or --help flag for more information")
 
     # Save the result
     with open(SOURCE, 'w') as file:
